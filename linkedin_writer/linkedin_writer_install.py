@@ -41,18 +41,18 @@ Transform voice memos and ideas into polished LinkedIn posts that match your uni
 - Anyone wanting to post more consistently on LinkedIn
 
 **Requirements:**
-- OpenAI API key (for audio transcription)
+- ElevenLabs API key (for audio transcription)
 """
 
 LINKEDIN_WRITER_SETUP_SCHEMA = [
     {
-        "bs_name": "OPENAI_API_KEY",
+        "bs_name": "ELEVENLABS_API_KEY",
         "bs_type": "string_long",
         "bs_default": "",
         "bs_group": "API Keys",
         "bs_order": 1,
         "bs_importance": 2,
-        "bs_description": "OpenAI API key for audio transcription (Whisper API). Get one at https://platform.openai.com/api-keys",
+        "bs_description": "ElevenLabs API key for audio transcription. Get one at https://elevenlabs.io",
     },
 ]
 
@@ -93,7 +93,7 @@ async def install(
         marketable_setup_default=LINKEDIN_WRITER_SETUP_SCHEMA,
         marketable_featured_actions=[
             {"feat_question": "Help me set up my writing style", "feat_expert": "default", "feat_depends_on_setup": []},
-            {"feat_question": "Create a post from my latest idea", "feat_expert": "default", "feat_depends_on_setup": ["OPENAI_API_KEY"]},
+            {"feat_question": "Create a post from my latest idea", "feat_expert": "default", "feat_depends_on_setup": ["ELEVENLABS_API_KEY"]},
         ],
         marketable_intro_message="Hi! I'm your LinkedIn Post Writer. I help you turn voice memos and ideas into polished posts that match your personal writing style.\n\nTo get started, I need to learn your writing style. Please paste your last 5 LinkedIn posts so I can analyze your tone, structure, and formatting.",
         marketable_preferred_model_default="grok-4-1-fast-non-reasoning",

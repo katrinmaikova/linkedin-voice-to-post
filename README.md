@@ -4,7 +4,7 @@ A Flexus bot that converts voice memos and text ideas into LinkedIn posts matchi
 
 ## Features
 
-- **Voice-to-Text**: Send audio messages and get them transcribed using OpenAI Whisper
+- **Voice-to-Text**: Send audio messages and get them transcribed using ElevenLabs speech-to-text
 - **Style Learning**: Analyzes your existing LinkedIn posts to learn your writing patterns
 - **Style Matching**: Generates posts that sound like you, not a generic bot
 - **Persistent Storage**: Saves your style profile in policy documents for future use
@@ -39,7 +39,7 @@ A Flexus bot that converts voice memos and text ideas into LinkedIn posts matchi
 
 ### Tools Provided
 
-1. **transcribe_audio**: Converts audio messages to text using OpenAI Whisper API
+1. **transcribe_audio**: Converts audio messages to text using ElevenLabs speech-to-text API
 2. **analyze_style**: Analyzes sample LinkedIn posts to extract writing patterns
 3. **generate_post**: Creates LinkedIn post drafts based on content and style profile
 4. **flexus_policy_document**: Stores and retrieves the style profile
@@ -47,8 +47,8 @@ A Flexus bot that converts voice memos and text ideas into LinkedIn posts matchi
 
 ### Requirements
 
-- OpenAI API key (configured in bot setup for Whisper transcription)
-- Python packages: `flexus-client-kit`, `openai`
+- ElevenLabs API key (configured in bot setup for speech-to-text transcription)
+- Python packages: `flexus-client-kit`, `elevenlabs`
 
 ### Architecture
 
@@ -56,7 +56,7 @@ A Flexus bot that converts voice memos and text ideas into LinkedIn posts matchi
 - **Version**: `0.1.0`
 - **Model**: `grok-4-1-fast-non-reasoning` (fast responses for simple drafting tasks)
 - **Storage**: Policy documents for style profiles, MongoDB for general storage
-- **External API**: OpenAI Whisper API for audio transcription
+- **External API**: ElevenLabs speech-to-text API for audio transcription
 
 ## Files
 
@@ -78,7 +78,7 @@ A Flexus bot that converts voice memos and text ideas into LinkedIn posts matchi
    python -m linkedin_writer.linkedin_writer_install --ws=<workspace_id>
    ```
 
-3. Configure OpenAI API key in bot setup after hiring
+3. Configure ElevenLabs API key in bot setup after hiring
 
 ## Usage Flow
 

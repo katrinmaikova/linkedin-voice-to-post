@@ -5,7 +5,7 @@ import logging
 import os
 from typing import Dict, Any, Optional
 
-from openai import AsyncOpenAI
+from elevenlabs.client import AsyncElevenLabs
 from pymongo import AsyncMongoClient
 
 from flexus_client_kit import ckit_client
@@ -87,8 +87,8 @@ async def linkedin_writer_main_loop(fclient: ckit_client.FlexusClient, rcx: ckit
     personal_mongo = mydb["personal_mongo"]
     pdoc_integration = fi_pdoc.IntegrationPdoc(rcx, rcx.persona.ws_root_group_id)
 
-    openai_api_key = setup.get("OPENAI_API_KEY", os.getenv("OPENAI_API_KEY", ""))
-    openai_client = AsyncOpenAI(api_key=openai_api_key) if openai_api_key else None
+    elevenlabs_api_key = setup.get("ELEVENLABS_API_KEY", os.getenv("ELEVENLABS_API_KEY", ""))
+    elevenlabs_client = AsyncElevenLabs(api_key=elevenlabs_api_key) if elevenlabs_api_key else None
 
     @rcx.on_updated_message
     async def updated_message_in_db(msg: ckit_ask_model.FThreadMessageOutput):
@@ -104,8 +104,8 @@ async def linkedin_writer_main_loop(fclient: ckit_client.FlexusClient, rcx: ckit
 
     @rcx.on_tool_call(TRANSCRIBE_AUDIO_TOOL.name)
     async def toolcall_transcribe_audio(toolcall: ckit_cloudtool.FCloudtoolCall, model_produced_args: Dict[str, Any]) -> str:
-        if not openai_client:
-            return "ERROR: OpenAI API key not configured. Please add your OpenAI API key in bot setup."
+        if not elevenlabs_client:
+            return "ERROR: ElevenLabs API key not configured. Please add your ElevenLabs API key in bot setup."
 
         try:
             thread = await ckit_ask_model.thread_get(fclient, toolcall.fcall_ft_id)
@@ -140,26 +140,12 @@ async def linkedin_writer_main_loop(fclient: ckit_client.FlexusClient, rcx: ckit
 
             audio_bytes = base64.b64decode(audio_data)
 
-            file_extension = "ogg"
-            if "mp3" in audio_format.lower():
-                file_extension = "mp3"
-            elif "wav" in audio_format.lower():
-                file_extension = "wav"
-            elif "m4a" in audio_format.lower():
-                file_extension = "m4a"
+            response = await elevenlabs_client.speech_to_text.convert(
+                audio=audio_bytes,
+                model_id="scribe_v2",
+            )
 
-            temp_file = f"/tmp/audio_{toolcall.fcall_id}.{file_extension}"
-            with open(temp_file, "wb") as f:
-                f.write(audio_bytes)
-
-            with open(temp_file, "rb") as audio_file:
-                transcript = await openai_client.audio.transcriptions.create(
-                    model="whisper-1",
-                    file=audio_file,
-                    response_format="text",
-                )
-
-            os.remove(temp_file)
+            transcript = response.text
 
             logger.info(f"Transcription successful: {len(transcript)} chars")
             return f"Audio transcribed successfully:\n\n{transcript}"

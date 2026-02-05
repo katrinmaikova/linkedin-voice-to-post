@@ -6,7 +6,7 @@ setup(
     packages=find_packages(),
     install_requires=[
         "flexus-client-kit",
-        "openai",
+        "elevenlabs",
     ],
     package_data={"": ["*.webp", "*.png", "*.html", "*.lark", "*.json"]},
 )
